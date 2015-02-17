@@ -5,11 +5,11 @@ NAME=${2:-"<ProductName>"}
 VENDOR=${3:-"<com.example.vendor>"}
 ARCH=${4:-"x86_64"}
 VERSION=${5:-$(date +%Y%m%d)}
-EXTRA_RELEASE=${6}
+EXTRA_RELEASE=${6:-${EXTRA_RELEASE}}
 
 if [[ -n $@ ]];
 then
-echo $TYPE:$NAME:$VENDOR:$ARCH:$VERSION
+echo ${TYPE}:${NAME}:${VENDOR}:${ARCH}:${VERSION}${EXTRA_RELEASE}
 else
 echo "Usage: $0 TYPE NAME VENDOR [ARCH] [VERSION] [EXTRA_RELEASE]"
 fi
