@@ -21,7 +21,7 @@ VM_SMP=${7:-4}
 [[ ! -f $DISK_NAME ]]
 
 [[ -z "$DISK_SIZE" ]] && egrep "^part.*--grow" $KICKSTART && exit 4
-[[ -z "$DISK_SIZE" ]] && DISK_SIZE=$(( 128 + $(sed -n "/^part / s/.*size=\([0-9]\+\).*/\1/ p" $KICKSTART) )) # Assumption: One partition
+[[ -z "$DISK_SIZE" ]] && DISK_SIZE=$(( 128 + $(sed -n "/^part / s/.*size[ =]\([0-9]\+\).*/\1/ p" $KICKSTART) )) # Assumption: One partition
 [[ -n "$DISK_SIZE" ]]
 
 MIRRORS=
