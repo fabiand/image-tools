@@ -5,14 +5,14 @@ set -ex
 trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
 
 usage() {
-echo "Usage: $0 <distro> <releasever> <kickstart> <dstimage> [<disksize>G]"
+echo "Usage: $0 <distro> <releasever> <kickstart> <dstimage> [<disksize-in-mb>]"
 }
 
 DISTRO=$1
 RELEASEVER=$2
 KICKSTART=$3
 DISK_NAME=$4
-DISK_SIZE=${5:-10G}
+DISK_SIZE=${5}
 
 VM_RAM=${6:-2048}
 VM_SMP=${7:-4}
@@ -70,7 +70,10 @@ sed -i "s#@HOST_HTTP@#http://10.0.2.2:$PYPORT#" $KICKSTART
 
 python -m SimpleHTTPServer $PYPORT &
 
-qemu-img create -f qcow2 $DISK_NAME $DISK_SIZE
+[[ -z "$DISK_SIZE" ]] && egrep "^part.*--grow" $KICKSTART && exit 4
+[[ -z "$DISK_SIZE" ]] && DISK_SIZE=$(( 128 + $(sed -n "/^part / s/.*size=\([0-9]\+\).*/\1/ p" $KICKSTART) )) # Assumption: One partition
+[[ -n "$DISK_SIZE" ]]
+qemu-img create -f qcow2 $DISK_NAME $(( $DISK_SIZE / 1024 ))G
 
 qemu-system-x86_64 \
 	-enable-kvm \
