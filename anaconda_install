@@ -20,6 +20,10 @@ VM_SMP=${7:-4}
 [[ -f $KICKSTART ]]
 [[ ! -f $DISK_NAME ]]
 
+[[ -z "$DISK_SIZE" ]] && egrep "^part.*--grow" $KICKSTART && exit 4
+[[ -z "$DISK_SIZE" ]] && DISK_SIZE=$(( 128 + $(sed -n "/^part / s/.*size=\([0-9]\+\).*/\1/ p" $KICKSTART) )) # Assumption: One partition
+[[ -n "$DISK_SIZE" ]]
+
 MIRRORS=
 
 if [[ "$DISTRO" = "fedora" ]];
@@ -70,10 +74,7 @@ sed -i "s#@HOST_HTTP@#http://10.0.2.2:$PYPORT#" $KICKSTART
 
 python -m SimpleHTTPServer $PYPORT &
 
-[[ -z "$DISK_SIZE" ]] && egrep "^part.*--grow" $KICKSTART && exit 4
-[[ -z "$DISK_SIZE" ]] && DISK_SIZE=$(( 128 + $(sed -n "/^part / s/.*size=\([0-9]\+\).*/\1/ p" $KICKSTART) )) # Assumption: One partition
-[[ -n "$DISK_SIZE" ]]
-qemu-img create -f qcow2 $DISK_NAME $(( $DISK_SIZE / 1024 ))G
+qemu-img create -f qcow2 $DISK_NAME ${DISK_SIZE}M
 
 qemu-system-x86_64 \
 	-enable-kvm \
