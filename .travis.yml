@@ -1,0 +1,12 @@
+language: python
+
+python:
+  - "2.7"
+
+script:
+ - bash -n anaconda_install
+ - bash -n image_to_squashfs
+ - bash -n image-verrel
+
+notifications:
+  irc: "chat.freenode.net#ovirt-node"
