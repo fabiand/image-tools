@@ -14,7 +14,7 @@ noop:
 	@echo This expects rootfs.ks to exist
 
 %.qcow2: %.ks
-	bash $(mkfile_dir)/anaconda_install $(DISTRO) $(RELEASEVER) $< $@
+	bash $(mkfile_dir)/anaconda_install $(DISTRO) $(RELEASEVER) $< $@ $(DISK_SIZE)
 
 %.raw: %.qcow2
 	qemu-img convert -p -S 1M -O raw $< $@

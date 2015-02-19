@@ -5,14 +5,14 @@ set -ex
 trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
 
 usage() {
-echo "Usage: $0 <distro> <releasever> <kickstart> <dstimage> [<disksize-in-mb>]"
+echo "Usage: $0 <distro> <releasever> <kickstart> [<dstimage> [<disksize-in-mb>]]"
 }
 
 DISTRO=$1
 RELEASEVER=$2
 KICKSTART=$3
 DISK_NAME=$4
-DISK_SIZE=${5:-5120}
+DISK_SIZE=$5
 
 VM_RAM=${6:-2048}
 VM_SMP=${7:-4}
