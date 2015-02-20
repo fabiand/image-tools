@@ -15,7 +15,8 @@ noop:
 
 %.qcow2: %.ks
 	bash $(mkfile_dir)/anaconda_install $(DISTRO) $(RELEASEVER) $< $@ $(DISK_SIZE)
-	-virt-sparsify --compress --in-place $@ \
+	-virt-sparsify --in-place $@ \
+	  || virt-sparsify --check-tmpdir=continue --compress $@ $@.sparse && mv -v $@.sparse $@ \
 	  || virt-sparsify --compress $@ $@.sparse && mv -v $@.sparse $@
 
 %.raw: %.qcow2
