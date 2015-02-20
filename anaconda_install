@@ -71,6 +71,8 @@ APPEND+=" cmdline inst.cmdline inst.ks=http://10.0.2.2:$PYPORT/$(basename $KICKS
 APPEND+=" $QEMU_APPEND"
 
 sed -i "s#@HOST_HTTP@#http://10.0.2.2:$PYPORT#" $KICKSTART
+[[ -n "$http_proxy" ]] && sed -i "s/^\(url\|repo\) /\1 --proxy=$http_proxy /" "$KICKSTART" \
+                       || sed -i "s/\(.*\) --proxy=\S\+\(.*\)/\1\2/" "$KICKSTART"
 
 python -m SimpleHTTPServer $PYPORT &
 
