@@ -32,7 +32,7 @@ image_to_squashfs()
   # FIXME The size of the mbr/label is hardcoded, works by removing the label from the disk image
   [[ $(file $SRCIMAGE) =~ "boot sector" ]] && {
     info "Found a disk image, extracting the filesystem ..."
-    nice dd conv=sparse bs=1M skip=1 if=$SRCIMAGE of=squashfs-root/LiveOS/rootfs.img
+    nice ionice dd conv=sparse bs=1M skip=1 if=$SRCIMAGE of=squashfs-root/LiveOS/rootfs.img
   }
 
   # If the image is already afilesystem, take it directly
