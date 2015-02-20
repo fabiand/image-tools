@@ -15,6 +15,8 @@ noop:
 
 %.qcow2: %.ks
 	bash $(mkfile_dir)/anaconda_install $(DISTRO) $(RELEASEVER) $< $@ $(DISK_SIZE)
+	-virt-sparsify --check-tmpdir continue --compress --in-place $@ \
+	  || -virt-sparsify --compress $@ $@.sparse && mv -v $@.sparse $@
 
 %.raw: %.qcow2
 	qemu-img convert -p -S 1M -O raw $< $@
