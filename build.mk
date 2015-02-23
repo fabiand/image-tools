@@ -13,6 +13,8 @@ noop:
 	@echo make rootfs.qcow2
 	@echo This expects rootfs.ks to exist
 
+# Direct for virt-sparsify: http://libguestfs.org/guestfs.3.html#backend
+export LIBGUESTFS_BACKEND=direct
 %.qcow2: %.ks
 	bash $(mkfile_dir)/anaconda_install $(DISTRO) $(RELEASEVER) $< $@ $(DISK_SIZE)
 	-virt-sparsify --in-place $@ \
