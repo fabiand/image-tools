@@ -6,7 +6,7 @@
 mkfile_dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 DISTRO=fedora
-RELEASEVER=21
+RELEASEVER=22
 
 noop:
 	@echo Please select a specific target
