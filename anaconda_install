@@ -35,7 +35,7 @@ fi
 if [[ "$DISTRO" = "centos" ]];
 then
   CENTOS_URL="http://mirror.centos.org/centos/7/os/x86_64/"
-  MIRRORS="http://mirrorlist.centos.org/mirrorlist?repo=os&release=$RELEASEVER&arch=x86_64"
+  MIRRORS="http://mirrorlist.centos.org/?repo=os&release=$RELEASEVER&arch=x86_64"
 fi
 
 [[ -z $MIRRORS ]] && exit 3
