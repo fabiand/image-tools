@@ -17,11 +17,13 @@ noop:
 export LIBGUESTFS_BACKEND=direct
 # Workaround nest problem: https://bugzilla.redhat.com/show_bug.cgi?id=1195278
 export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
+export TMPDIR=/var/tmp/
+%.qcow2: SPARSE=1
 %.qcow2: %.ks
 	bash $(mkfile_dir)/anaconda_install $(DISTRO) $(RELEASEVER) $< $@ $(DISK_SIZE)
-	-virt-sparsify --in-place $@ \
+	- [[ -n "$(SPARSE)" ]] && ( virt-sparsify --in-place $@ \
 	  || virt-sparsify --check-tmpdir=continue --compress $@ $@.sparse && mv -v $@.sparse $@ \
-	  || virt-sparsify --compress $@ $@.sparse && mv -v $@.sparse $@
+	  || virt-sparsify --compress $@ $@.sparse && mv -v $@.sparse $@ ; )
 
 %.raw: %.qcow2
 	qemu-img convert -p -S 1M -O raw $< $@
