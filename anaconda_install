@@ -30,6 +30,7 @@ if [[ "$DISTRO" = "fedora" ]];
 then
   MIRRORS="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$RELEASEVER&arch=x86_64"
   [[ "$RELEASEVER" = "21" ]] && MIRRORS="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-install-$RELEASEVER&arch=x86_64" || :
+  [[ "$RELEASEVER" = "22" ]] && QEMU_APPEND="$QEMU_APPEND proxy=" || :
 fi
 
 if [[ "$DISTRO" = "centos" ]];
