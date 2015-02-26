@@ -35,3 +35,5 @@ export TMPDIR=/var/tmp/
 %.tar.xz: %.qcow2
 	guestfish -i -a $< tar-out / $@ compress:xz
 
+%-manifest-rpm: %.qcow2
+	guestfish -ia $< sh 'rpm -qa | sort -u' > $@
