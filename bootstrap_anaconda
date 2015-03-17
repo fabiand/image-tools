@@ -1,0 +1,49 @@
+#!/usr/bin/bash
+
+set -ex
+
+usage() {
+echo "Usage: $0 <distro> <releasever>
+}
+
+DISTRO=$1
+RELEASEVER=$2
+
+MIRRORS=
+
+if [[ "$DISTRO" = "fedora" ]];
+then
+  MIRRORS="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$RELEASEVER&arch=x86_64"
+  [[ "$RELEASEVER" = "21" ]] && MIRRORS="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-install-$RELEASEVER&arch=x86_64" || :
+  [[ "$RELEASEVER" = "22" ]] && QEMU_APPEND="$QEMU_APPEND proxy=" || :
+fi
+
+if [[ "$DISTRO" = "centos" ]];
+then
+  CENTOS_URL="http://mirror.centos.org/centos/7/os/x86_64/"
+  MIRRORS="http://mirrorlist.centos.org/?repo=os&release=$RELEASEVER&arch=x86_64"
+fi
+
+[[ -z $MIRRORS ]] && exit 3
+
+mirrorcurl() {
+  [[ -f $(basename $1) ]] && return
+  curl --location --fail -s "$MIRRORS" \
+  | sed -n 's/Everything/Fedora/ ; /^ht/ p' \
+  | while read BURL; do URL=$BURL$1 ; echo Using $URL ; curl --fail -L -O $URL && break ; done ; test -f $(basename $1)
+}
+
+
+mirrorcurl images/pxeboot/vmlinuz
+mirrorcurl images/pxeboot/initrd.img
+mirrorcurl images/pxeboot/upgrade.img
+mirrorcurl LiveOS/squashfs.img
+
+rm -f .treeinfo
+mirrorcurl .treeinfo
+echo "Adjusting squashfs image path, so anaconda finds it"
+# Anaconda uses the .treeinfo file to find stuff
+# Let the squashfs point to the PWD, not in some subdir
+sed -i -e "s#=.*images/pxeboot/#= #" \
+       -e "s#=.*LiveOS/#= #" \
+       .treeinfo
