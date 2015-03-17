@@ -58,7 +58,7 @@ qemu-system-x86_64 \
 	-serial stdio \
 	-smp $VM_SMP \
 	-m $VM_RAM \
-	-drive if=virtio,${QEMU_DISCARD}file=$DISK_NAME \
+	-drive if=virtio,cache=unsafe,${QEMU_DISCARD}file=$DISK_NAME \
 	-net user -net nic \
 	-kernel vmlinuz \
 	-initrd initrd.img \
