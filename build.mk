@@ -30,10 +30,11 @@ export TMPDIR=/var/tmp/
 	qemu-img convert -p -S 1M -O raw $< $@
 
 %.squashfs.img: %.raw
+	[[ $$(guestfish --ro -i -a $< is-dir /boot) = "true" ]]
 	bash $(mkfile_dir)/image_to_squashfs $< $@
 
 %.tar.xz: %.qcow2
-	guestfish -i -a $< tar-out / $@ compress:xz
+	guestfish --ro -i -a $< tar-out / $@ compress:xz
 
 %-manifest-rpm: %.qcow2
-	guestfish -ia $< sh 'rpm -qa | sort -u' > $@
+	guestfish --ro -i -a $< sh 'rpm -qa | sort -u' > $@
