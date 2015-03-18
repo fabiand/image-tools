@@ -27,7 +27,7 @@ fi
 [[ -z $MIRRORS ]] && exit 3
 
 mirrorcurl() {
-  [[ -f $(basename $1) ]] && ( egrep -q "^$1" .treeinfo && grep -q "$1 = sha256:$(sha256sum $(basename $1) | cut -d' ' -f1)" .treeinfo || true ) && return
+  [[ -f $(basename $1) ]] && grep -q "$1 = sha256:$(sha256sum $(basename $1) | cut -d' ' -f1)" .treeinfo && return
   curl --location --fail -s "$MIRRORS" \
   | sed -n 's/Everything/Fedora/ ; /^ht/ p' \
   | while read BURL; do URL=$BURL$1 ; echo Using $URL ; curl --fail -L -O $URL && break ; done ; test -f $(basename $1)
