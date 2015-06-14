@@ -6,6 +6,10 @@ usage() {
 echo "Usage: $0 <distro> <releasever>"
 }
 
+die() {
+echo $@ >&2 ; exit 42
+}
+
 DISTRO=$1
 RELEASEVER=$2
 
@@ -14,7 +18,7 @@ MIRRORS=
 if [[ "$DISTRO" = "fedora" ]];
 then
   MIRRORS="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$RELEASEVER&arch=x86_64"
-  [[ "$RELEASEVER" = "21" ]] && MIRRORS="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-install-$RELEASEVER&arch=x86_64" || :
+  [[ "$RELEASEVER" = "21" ]] && die "Fedora 21 is not supported anymore"
   [[ "$RELEASEVER" = "22" ]] && QEMU_APPEND="$QEMU_APPEND proxy=" || :
 fi
 
@@ -29,7 +33,7 @@ fi
 mirrorcurl() {
   [[ -f $(basename $1) ]] && grep -q "$1 = sha256:$(sha256sum $(basename $1) | cut -d' ' -f1)" .treeinfo && return
   curl --location --fail -s "$MIRRORS" \
-  | sed -n 's/Everything/Fedora/ ; /^ht/ p' \
+  | sed -n 's/Everything/Server/ ; /^ht/ p' \
   | while read BURL; do URL=$BURL$1 ; echo Using $URL ; curl --fail -L -O $URL && break ; done ; test -f $(basename $1)
 }
 
