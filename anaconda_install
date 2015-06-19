@@ -40,7 +40,7 @@ APPEND+=" $QEMU_APPEND"
 sed -i "s#@HOST_HTTP@#http://10.0.2.2:$PYPORT#" $KICKSTART
 if [[ -n "$http_proxy" ]];
 then
-  sed -i "/--proxy/! s#^\(url\|repo\) #\1 --proxy=$http_proxy #" "$KICKSTART"
+#  sed -i "/--proxy/! s#^\(url\|repo\) #\1 --proxy=$http_proxy #" "$KICKSTART"
   sed -i "/^export http_proxy/d ;  s#%post#%post\\nexport http_proxy=$http_proxy#" "$KICKSTART"
 else
   sed -i "s/\(.*\) --proxy=\S\+\(.*\)/\1\2/" "$KICKSTART"
