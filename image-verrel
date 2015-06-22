@@ -4,7 +4,7 @@ TYPE=${1:-rootfs}
 NAME=${2:-"<ProductName>"}
 VENDOR=${3:-"<com.example.vendor>"}
 ARCH=${4:-"x86_64"}
-VERSION=${5:-$(date +%Y%m%d)}
+VERSION=${5:-$(date +%Y%m%d%H%M%S)}
 EXTRA_RELEASE=${6:-${EXTRA_RELEASE}}
 
 if [[ -n $@ ]];
