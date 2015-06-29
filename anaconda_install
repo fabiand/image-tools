@@ -51,17 +51,20 @@ python -m SimpleHTTPServer $PYPORT &
 
 qemu-img create -f qcow2 $DISK_NAME ${DISK_SIZE}M
 
-[[ "$(qemu-system-x86_64 -version)" =~ "version 2." ]] && QEMU_DISCARD="discard=on,"
+QEMU_DRIVE="-drive if=virtio,cache=unsafe,file=$DISK_NAME"
+if [[ "$(qemu-system-x86_64 -version)" =~ "version 2.3" ]]; then
+  QEMU_DRIVE="-drive discard=unmap,cache=unsafe,if=none,id=hd0,file=$DISK_NAME -device virtio-scsi-pci -device scsi-disk,drive=hd0"
+fi
 qemu-system-x86_64 \
 	-enable-kvm \
 	-vnc 0.0.0.0:$VNCPORT \
 	-serial stdio \
 	-smp $VM_SMP \
 	-m $VM_RAM \
-	-drive if=virtio,cache=unsafe,${QEMU_DISCARD}file=$DISK_NAME \
 	-net user -net nic \
 	-kernel vmlinuz \
 	-initrd initrd.img \
 	-device virtio-serial \
 	-chardev file,id=logfile,path=anaconda.log -device virtserialport,name=org.fedoraproject.anaconda.log.0,chardev=logfile \
+	$QEMU_DRIVE \
 	-append "$APPEND"
