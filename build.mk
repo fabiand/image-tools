@@ -22,8 +22,8 @@ export TMPDIR=/var/tmp/
 %.qcow2: %.ks
 	bash $(mkfile_dir)/anaconda_install $(DISTRO) $(RELEASEVER) $< $@ $(DISK_SIZE)
 	-[[ -n "$(SPARSE)" ]] && [[ "$$(virt-sparsify --help)" =~ --in-place ]] && ( virt-sparsify --in-place $@ ; ln $@ $@.sparse ; )
-	-[[ -n "$(SPARSE)" ]] && [[ ! -f $@.sparse ]] && [[ "$$(virt-sparsify --help)" =~ --check-tempdir ]] && virt-sparsify --compress --check-tmpdir=continue $@ $@.sparse
-	-[[ -n "$(SPARSE)" ]] && [[ ! -f $@.sparse ]] && virt-sparsify --compress $@ $@.sparse
+	-[[ -n "$(SPARSE)" ]] && [[ ! -f $@.sparse ]] && [[ "$$(virt-sparsify --help)" =~ --check-tempdir ]] && virt-sparsify --check-tmpdir=continue $@ $@.sparse
+	-[[ -n "$(SPARSE)" ]] && [[ ! -f $@.sparse ]] && virt-sparsify $@ $@.sparse
 	-[[ -f $@.sparse ]] &&  ( mv -v $@.sparse $@ ; rm -f $@.sparse ; )
 
 %.raw: %.qcow2
