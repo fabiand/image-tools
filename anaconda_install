@@ -2,7 +2,7 @@
 
 set -ex
 # Kill child processes on exit
-trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
+trap 'kill $(jobs -pr) || :' SIGINT SIGTERM EXIT
 
 usage() {
 echo "Usage: $0 <distro> <releasever> <kickstart> [<dstimage> [<disksize-in-mb>]]"
