@@ -15,6 +15,19 @@ EOF
 info() { echo $(date +%X) $@ ; }
 die() { echo $@ >&2 ; exit 1 ; }
 
+find_first_fs_offset_kib() {
+  DISKIMAGE=$1
+  START_BYTES=$(parted -ms "$DISKIMAGE" unit KiB print | sed -n "/^1:/ p" | cut -d: -f2 | tr -d kiB)
+  echo $START_BYTES
+}
+
+extract_first_fs() {
+  DISKIMAGE=$1
+  FSIMAGE=$2
+  OFFSET=$(find_first_fs_offset_kib "$DISKIMAGE")
+  nice ionice dd conv=sparse bs=1K skip=$OFFSET if="$DISKIMAGE" of="$FSIMAGE"
+}
+
 image_to_squashfs()
 {
   SRCIMAGE=$1
@@ -32,7 +45,7 @@ image_to_squashfs()
   # FIXME The size of the mbr/label is hardcoded, works by removing the label from the disk image
   [[ $(file $SRCIMAGE) =~ "boot sector" ]] && {
     info "Found a disk image, extracting the filesystem ..."
-    nice ionice dd conv=sparse bs=1M skip=1 if=$SRCIMAGE of=squashfs-root/LiveOS/rootfs.img
+    extract_first_fs "$SRCIMAGE" "squashfs-root/LiveOS/rootfs.img"
   }
 
   # If the image is already afilesystem, take it directly
