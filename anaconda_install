@@ -34,7 +34,7 @@ bash $(dirname $0)/bootstrap_anaconda $DISTRO $RELEASEVER
 PYPORT=$(( 50000 + $RANDOM % 15000 ))
 VNCPORT=$(( $RANDOM % 1000 ))
 APPEND="console=ttyS0 quiet"
-APPEND+=" cmdline inst.cmdline inst.ks=http://10.0.2.2:$PYPORT/$(basename $KICKSTART) inst.stage2=http://10.0.2.2:$PYPORT/"
+APPEND+=" cmdline inst.cmdline inst.ks=http://10.0.2.2:$PYPORT/$(basename $KICKSTART) inst.stage2=http://10.0.2.2:$PYPORT/ inst.zram=on"
 APPEND+=" $QEMU_APPEND"
 
 sed -i "s#@HOST_HTTP@#http://10.0.2.2:$PYPORT#" $KICKSTART
