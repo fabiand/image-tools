@@ -1,7 +1,7 @@
 This is a set of tools related to image building for anaconda based
 distributions.
 
-This is quite redudndat to imagefactory and livemedia-creator, but it
+This is quite redundant to imagefactory and livemedia-creator, but it
 helps to do CI in Jenkins, where sometimes a fully fledged libvirt
 is not available.
 
