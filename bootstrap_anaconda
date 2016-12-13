@@ -37,13 +37,14 @@ mirrorcurl() {
   | while read BURL; do URL=$BURL$1 ; echo Using $URL ; curl --fail -L -O $URL && break ; done ; test -f $(basename $1)
 }
 
+cond_mirrorcurl() { grep -q $1 .treeinfo && mirrorcurl $1 || : ; }
 
 rm -f .treeinfo
 mirrorcurl .treeinfo
 mirrorcurl images/pxeboot/vmlinuz
 mirrorcurl images/pxeboot/initrd.img
-mirrorcurl images/pxeboot/upgrade.img
-mirrorcurl LiveOS/squashfs.img
+cond_mirrorcurl images/pxeboot/upgrade.img
+cond_mirrorcurl LiveOS/squashfs.img
 
 echo "Adjusting squashfs image path, so anaconda finds it"
 # Anaconda uses the .treeinfo file to find stuff
